@@ -19,7 +19,7 @@ type Chapter struct {
 }
 type StoryF struct {
 	Intros    Chapter `json:"intro"`
-	NewYork   Chapter `json:"intro"`
+	NewYork   Chapter `json:"new-york"`
 	Debate    Chapter `json:"debate"`
 	SeanKelly Chapter `json:"sean-kelly"`
 	MarkBates Chapter `json:"mark-bates"`
@@ -34,7 +34,7 @@ func readFile(file string) string {
 }
 func main() {
 	var storyF StoryF
-	data := readFile("A.json")
+	data := readFile("gopher.json")
 	err := json.Unmarshal([]byte(data), &storyF)
 	if err != nil {
 		log.Fatal(err)

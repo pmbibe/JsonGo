@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+var storyF StoryF
+
 type Option struct {
 	Text string `json:"text"`
 	Arc  string `json:"arc"`
@@ -17,34 +19,41 @@ type Chapter struct {
 	Story   []string `json:"story"`
 	Options []Option `json:"options"`
 }
-type StoryF struct {
-	Intros    Chapter `json:"intro"`
-	NewYork   Chapter `json:"new-york"`
-	Debate    Chapter `json:"debate"`
-	SeanKelly Chapter `json:"sean-kelly"`
-	MarkBates Chapter `json:"mark-bates"`
-	Denver    Chapter `json:"denver"`
-	Home      Chapter `json:"home"`
-}
+type StoryF map[string]Chapter
 
 func readFile(file string) string {
 	dat, _ := ioutil.ReadFile(file)
 	return string(dat)
 
 }
-func main() {
-	var storyF StoryF
-	data := readFile("gopher.json")
-	err := json.Unmarshal([]byte(data), &storyF)
-	if err != nil {
-		log.Fatal(err)
-	}
-	b, err := json.Marshal(storyF)
+func rePrintJSON(v interface{}) {
+	b, err := json.Marshal(v)
 	if err != nil {
 		log.Fatal(err)
 	}
 	var out bytes.Buffer
 	json.Indent(&out, b, "", "\t")
 	out.WriteTo(os.Stdout)
+}
 
+//use Decode
+func useDecode(file string) {
+	f, _ := os.Open(file)
+	d := json.NewDecoder(f)
+	d.Decode(&storyF)
+	rePrintJSON(storyF)
+}
+
+//use UnMarshal
+func useMarshal(file string) {
+	data := readFile(file)
+	err := json.Unmarshal([]byte(data), &storyF)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rePrintJSON(storyF)
+}
+func main() {
+	file := "gopher.json"
+	useMarshal(file)
 }

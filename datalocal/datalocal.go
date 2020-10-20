@@ -1,4 +1,4 @@
-package main
+package datalocal
 
 import (
 	"bytes"
@@ -10,23 +10,31 @@ import (
 
 var storyF StoryF
 
+//Option Oki
 type Option struct {
 	Text string `json:"text"`
 	Arc  string `json:"arc"`
 }
+
+//Chapter Oki
 type Chapter struct {
 	Title   string   `json:"title"`
 	Story   []string `json:"story"`
 	Options []Option `json:"options"`
 }
+
+//StoryF Oki
 type StoryF map[string]Chapter
 
-func readFile(file string) string {
+//ReadFile Oki
+func ReadFile(file string) string {
 	dat, _ := ioutil.ReadFile(file)
 	return string(dat)
 
 }
-func rePrintJSON(v interface{}) {
+
+//RePrintJSON Oki
+func RePrintJSON(v interface{}) {
 	b, err := json.Marshal(v)
 	if err != nil {
 		log.Fatal(err)
@@ -34,26 +42,30 @@ func rePrintJSON(v interface{}) {
 	var out bytes.Buffer
 	json.Indent(&out, b, "", "\t")
 	out.WriteTo(os.Stdout)
+
 }
 
-//use Decode
-func useDecode(file string) {
+//UseDecode Oki
+func UseDecode(file string) StoryF {
 	f, _ := os.Open(file)
 	d := json.NewDecoder(f)
 	d.Decode(&storyF)
-	rePrintJSON(storyF)
+	RePrintJSON(storyF)
+	return storyF
 }
 
-//use UnMarshal
-func useMarshal(file string) {
-	data := readFile(file)
+//UseMarshal Oki
+func UseMarshal(file string) StoryF {
+	data := ReadFile(file)
 	err := json.Unmarshal([]byte(data), &storyF)
 	if err != nil {
 		log.Fatal(err)
 	}
-	rePrintJSON(storyF)
+	RePrintJSON(storyF)
+	return storyF
 }
-func main() {
-	file := "gopher.json"
-	useMarshal(file)
+
+//Data Oki
+func Data(file string) {
+	UseMarshal(file)
 }
